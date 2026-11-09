@@ -39,7 +39,7 @@ const halves = [
       <figure class="about__photo" data-photo>
         {
           photo ? (
-            <Image src={photo} alt={`${profile.name}, smiling`} width={440} loading="lazy" />
+            <Image src={photo} alt={`${profile.name}, smiling`} width={440} loading="lazy" draggable="false" />
           ) : (
             <div class="about__placeholder">
               <Icon name="person" size={36} stroke={1.5} />
@@ -145,12 +145,15 @@ const halves = [
     border: var(--ring) solid var(--tint);
     position: relative;
     overflow: hidden;
-    background: var(--deep-2);
+    /* The ring's colour, so the photo's anti-aliased edge blends into the ring. */
+    background: var(--tint);
   }
+  /* Rounded itself too: clipped by the circle alone, Chrome leaves a dark hairline at its edge. */
   .about__photo :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
   }
   /* Sized by the circle itself: the circle has no set height, only its ratio. */
   .about__placeholder {
@@ -161,6 +164,7 @@ const halves = [
     align-items: center;
     justify-content: center;
     gap: 6px;
+    background: var(--deep-2);
     color: var(--muted-deep);
     font-size: 13px;
     font-weight: 700;

@@ -87,3 +87,27 @@ test('until there is a photo, its placeholder fits inside the circle at every wi
     expect(fits, `placeholder at ${width}px`).toBe(true);
   }
 });
+
+// Clipping a square photo by the circle alone leaves a dark hairline at its edge in Chrome; the
+// photo is rounded itself. The fixture has no photo, so one is put in the circle.
+test('a photo in the circle is rounded itself, so no hairline shows at its edge', async ({ page }) => {
+  await page.goto('/');
+  const radius = await photo(page).evaluate((el) => {
+    const img = document.createElement('img');
+    el.append(img);
+    return getComputedStyle(img).borderRadius;
+  });
+  expect(radius).toBe('50%');
+});
+
+// Even rounded, the photo's anti-aliased edge lets the circle behind it show through, so that is
+// the ring's colour; the placeholder keeps its own dark disc.
+test('the circle behind the photo matches its ring, and the placeholder stays dark', async ({ page }) => {
+  await page.goto('/');
+  const circle = await photo(page).evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { fill: s.backgroundColor, ring: s.borderTopColor };
+  });
+  expect(circle.fill).toBe(circle.ring);
+  await expect(photo(page).locator('.about__placeholder')).toHaveCSS('background-color', 'rgb(43, 47, 54)');
+});

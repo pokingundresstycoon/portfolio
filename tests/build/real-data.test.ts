@@ -45,3 +45,16 @@ test('the PDF page names every tool of every maker', () => {
   expect(names.length).toBeGreaterThanOrEqual(23);
   for (const name of names) expect(pdf, name).toContain(name);
 });
+
+test('About shows the real photo, small and light, instead of the placeholder', async () => {
+  const { statSync } = await import('node:fs');
+  const { DIST } = await import('./dist');
+  const img = html.match(/<img\b[^>]*alt="Mushfikur Rahman, smiling"[^>]*>/)?.[0];
+  expect(img, 'the photo is on the page').toBeTruthy();
+  const src = img!.match(/\ssrc="([^"]+)"/)![1];
+  expect(src).toMatch(/^\/_astro\/.+\.webp$/);
+  expect(img).toContain('loading="lazy"');
+  expect(img, 'the photo cannot be dragged off the page').toContain('draggable="false"');
+  expect(statSync(`${DIST}${src}`).size, 'photo bytes').toBeLessThan(40_000);
+  expect(html).not.toContain('Your photo');
+});
