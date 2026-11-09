@@ -5,7 +5,10 @@ export const profileSchema = z.strictObject({
   nickname: z.string().min(1),
   role: z.string().min(1),
   statusLine: z.string().min(1),
+  /** The circle's photo in src/assets/: a close crop of the face. */
   photo: z.string().regex(/\.(jpe?g|png|webp|avif)$/i).nullable(),
+  /** The whole picture the circle opens into, also in src/assets/. */
+  photoFull: z.string().regex(/\.(jpe?g|png|webp|avif)$/i).nullable(),
   contact: z.strictObject({
     email: z.email(),
     whatsapp: z.string().regex(/^\d{10,15}$/).nullable(),

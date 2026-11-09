@@ -6,6 +6,7 @@ export const fullProfile: Profile = {
   role: 'Platform engineer + performance marketer',
   statusLine: 'Taking new work · Dhaka to worldwide',
   photo: 'mahi.jpg',
+  photoFull: 'mahi-full.jpg',
   contact: {
     email: 'hello@mushfikurahmaan.com',
     whatsapp: '8801000000000',

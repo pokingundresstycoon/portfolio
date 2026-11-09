@@ -69,45 +69,62 @@ test('links go to the work and the profile', async ({ page }) => {
   await expect(about(page).getByRole('link', { name: 'Email' })).toHaveAttribute('href', 'mailto:hello@mushfikurahmaan.com');
 });
 
-test('until there is a photo, its placeholder fits inside the circle at every width', async ({ page }) => {
-  for (const width of [320, 375, 768, 1280]) {
-    await page.setViewportSize({ width, height: 900 });
-    await page.goto('/');
-    // Every corner of the icon and of each line of text lies inside the circle.
-    const fits = await photo(page).evaluate((el) => {
-      const c = el.getBoundingClientRect();
-      const [cx, cy, r] = [c.x + c.width / 2, c.y + c.height / 2, el.clientWidth / 2];
-      const range = document.createRange();
-      range.selectNodeContents(el.querySelector('.about__placeholder span')!);
-      const rects = [...range.getClientRects(), el.querySelector('.about__placeholder svg')!.getBoundingClientRect()];
-      return rects.every((b) =>
-        [[b.left, b.top], [b.right, b.top], [b.left, b.bottom], [b.right, b.bottom]].every(([x, y]) => Math.hypot(x - cx, y - cy) <= r),
-      );
-    });
-    expect(fits, `placeholder at ${width}px`).toBe(true);
-  }
-});
-
 // Clipping a square photo by the circle alone leaves a dark hairline at its edge in Chrome; the
-// photo is rounded itself. The fixture has no photo, so one is put in the circle.
-test('a photo in the circle is rounded itself, so no hairline shows at its edge', async ({ page }) => {
+// photo is rounded itself, and the circle behind it is the ring's colour.
+test('the photo is rounded itself, on a circle the colour of its ring', async ({ page }) => {
   await page.goto('/');
-  const radius = await photo(page).evaluate((el) => {
-    const img = document.createElement('img');
-    el.append(img);
-    return getComputedStyle(img).borderRadius;
-  });
-  expect(radius).toBe('50%');
-});
-
-// Even rounded, the photo's anti-aliased edge lets the circle behind it show through, so that is
-// the ring's colour; the placeholder keeps its own dark disc.
-test('the circle behind the photo matches its ring, and the placeholder stays dark', async ({ page }) => {
-  await page.goto('/');
+  await expect(photo(page).locator('img').first()).toHaveCSS('border-radius', '50%');
   const circle = await photo(page).evaluate((el) => {
     const s = getComputedStyle(el);
     return { fill: s.backgroundColor, ring: s.borderTopColor };
   });
   expect(circle.fill).toBe(circle.ring);
-  await expect(photo(page).locator('.about__placeholder')).toHaveCSS('background-color', 'rgb(43, 47, 54)');
+});
+
+const opener = (page: Page) => photo(page).getByRole('button', { name: 'See the full photo' });
+const pop = (page: Page) => page.locator('[data-photo-pop]');
+
+test('clicking or tapping the photo opens the whole picture, rounded, and Escape closes it', async ({ page }) => {
+  await page.goto('/');
+  await expect(pop(page)).toBeHidden();
+  await opener(page).click();
+  await expect(pop(page)).toBeVisible();
+  const big = pop(page).locator('img');
+  await expect(big).toHaveCSS('border-radius', '28px');
+  await expect(big).toHaveAttribute('alt', 'Mushfikur Rahman standing by the water');
+  await expect.poll(() => big.evaluate((img: HTMLImageElement) => img.complete && img.naturalHeight > img.naturalWidth)).toBe(true);
+  // The whole picture, not the circle's crop.
+  expect(await big.getAttribute('src')).not.toBe(await photo(page).locator('img').first().getAttribute('src'));
+  await page.keyboard.press('Escape');
+  await expect(pop(page)).toBeHidden();
+});
+
+test('the pop-up has a close button', async ({ page }) => {
+  await page.goto('/');
+  await opener(page).click();
+  await pop(page).getByRole('button', { name: 'Close' }).click();
+  await expect(pop(page)).toBeHidden();
+});
+
+test('with a mouse, resting on the photo sweeps its ring round, then opens the picture; moving away closes it', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'phones have no hover');
+  await page.goto('/');
+  await opener(page).scrollIntoViewIfNeeded();
+  await opener(page).hover();
+  await expect(photo(page)).toHaveAttribute('data-hover', '');
+  await expect.poll(() => photo(page).evaluate((el) => getComputedStyle(el, '::after').getPropertyValue('--sweep').trim())).toBe('360deg');
+  await expect(pop(page)).toBeVisible();
+  await page.mouse.move(4, 4);
+  await page.mouse.move(2, 2);
+  await expect(pop(page)).toBeHidden();
+});
+
+test('passing over the photo quickly opens nothing', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'phones have no hover');
+  await page.goto('/');
+  await opener(page).scrollIntoViewIfNeeded();
+  await opener(page).hover();
+  await page.mouse.move(4, 4);
+  await page.waitForTimeout(900);
+  await expect(pop(page)).toBeHidden();
 });

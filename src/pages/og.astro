@@ -1,87 +1,84 @@
 ---
 import Base from '../layouts/Base.astro';
 import { loadProfile } from '../lib/load';
+import { PLANE } from '../lib/plane';
 
-// The 1200×630 share image (scripts/render-assets.ts screenshots it to /og.png).
+// The 1200×630 share image (scripts/render-assets.ts screenshots it to /og.png), built like an
+// airport gate sign: signal yellow, a graphite pictogram, the name set large.
 const profile = loadProfile();
 const host = new URL('/', Astro.site).host;
+// The status line ends with the reach, after its middle dot: "… · Dhaka to worldwide".
+const reach = profile.statusLine.split('·').at(-1)!.trim();
 ---
 
 <Base title="Mushfikur Rahman · Share image" description="Share image." path="/og/" noindex>
-  <main class="og">
-    <p class="og__status"><span aria-hidden="true"></span>{profile.statusLine}</p>
-    <p class="display og__name">{profile.name}</p>
-    <p class="display og__role">{profile.role}</p>
-    <div class="og__nums">
-      <p><b class="display">{profile.numbers.orders}</b> orders driven</p>
-      <p><b class="display">{profile.numbers.sales}</b> client sales</p>
-      <p class="og__host">{host}</p>
+  <main class="og" data-share-card>
+    <div class="og__sign" data-sign>
+      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={PLANE} />
     </div>
+    <div class="og__words">
+      <p class="display og__name" data-name>{profile.name}</p>
+      <p class="og__role" data-role>{profile.role}</p>
+    </div>
+    <p class="og__strip" data-strip><span>{host}</span><span>{reach}</span></p>
   </main>
 </Base>
 
 <style>
   .og {
+    position: relative;
     width: 1200px;
     height: 630px;
-    padding: 64px 72px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 18px;
     overflow: hidden;
-  }
-  .og__status {
-    display: inline-flex;
-    align-self: flex-start;
-    align-items: center;
-    gap: 10px;
-    font-size: 20px;
-    font-weight: 700;
-    padding: 10px 18px;
-    border-radius: 999px;
-    border: 1px solid var(--line-deep);
-    color: var(--muted-deep);
-  }
-  .og__status span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  .og__name {
-    font-size: 150px;
-  }
-  .og__role {
-    font-size: 52px;
-    color: var(--accent);
-  }
-  .og__nums {
-    margin-top: 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .og__nums p {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 12px 20px;
-    border-radius: 16px;
-    background: var(--deep-2);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--muted-deep);
-  }
-  .og__nums b {
-    font-size: 40px;
-    color: var(--tint);
-  }
-  .og__nums .og__host {
-    margin-left: auto;
     background: var(--accent);
     color: var(--deep);
-    font-size: 24px;
+  }
+  .og__sign {
+    position: absolute;
+    left: 72px;
+    top: 72px;
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    background: var(--deep);
+    display: grid;
+    place-items: center;
+  }
+  .og__sign svg {
+    width: 96px;
+    height: 96px;
+    fill: var(--accent);
+  }
+  .og__words {
+    position: absolute;
+    left: 262px;
+    top: 70px;
+    right: 72px;
+  }
+  .og__name {
+    font-size: 176px;
+    max-width: 7ch;
+  }
+  .og__role {
+    margin-top: 28px;
+    font-size: 40px;
     font-weight: 800;
+    line-height: 1.15;
+  }
+  .og__strip {
+    position: absolute;
+    inset: auto 0 0;
+    height: 104px;
+    padding: 0 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--deep);
+    color: var(--tint);
+    font-size: 32px;
+    font-weight: 800;
+  }
+  .og__strip span:first-child {
+    color: var(--accent);
   }
 </style>

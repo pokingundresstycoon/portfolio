@@ -14,6 +14,8 @@ const links = contactLinks(profile);
 const photos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/*.{jpg,jpeg,png,webp,avif}', { eager: true });
 const photo = profile.photo ? photos[`/src/assets/${profile.photo}`]?.default : undefined;
 if (profile.photo && !photo) throw new Error(`profile.photo "${profile.photo}" is not in src/assets/`);
+const full = profile.photoFull ? photos[`/src/assets/${profile.photoFull}`]?.default : undefined;
+if (profile.photoFull && !full) throw new Error(`profile.photoFull "${profile.photoFull}" is not in src/assets/`);
 
 // The two crafts, each with where most people in it stop.
 const halves = [
@@ -38,8 +40,12 @@ const halves = [
       }
       <figure class="about__photo" data-photo>
         {
-          photo ? (
-            <Image src={photo} alt={`${profile.name}, smiling`} width={440} loading="lazy" draggable="false" />
+          photo && full ? (
+            <button type="button" class="about__open" popovertarget="photo-full" aria-label="See the full photo" data-photo-open>
+              <Image src={photo} alt={profile.name} width={440} loading="lazy" draggable="false" />
+            </button>
+          ) : photo ? (
+            <Image src={photo} alt={profile.name} width={440} loading="lazy" draggable="false" />
           ) : (
             <div class="about__placeholder">
               <Icon name="person" size={36} stroke={1.5} />
@@ -49,6 +55,18 @@ const halves = [
         }
       </figure>
     </div>
+    {
+      photo && full && (
+        <div id="photo-full" class="about__pop" popover data-photo-pop>
+          <div class="about__frame" data-photo-frame>
+            <Image src={full} alt={`${profile.name} standing by the water`} width={900} loading="lazy" draggable="false" />
+            <button type="button" class="about__shut" popovertarget="photo-full" popovertargetaction="hide" aria-label="Close">
+              <Icon name="close" size={20} stroke={2.4} />
+            </button>
+          </div>
+        </div>
+      )
+    }
     <div class="about__close">
       <div>
         <p class="about__lead">I don’t stop. I follow every order all the way to the confirmed sale.</p>
@@ -69,6 +87,10 @@ const halves = [
     </div>
   </div>
 </section>
+
+<script>
+  import '../scripts/photo-pop';
+</script>
 
 <style>
   .about {
@@ -144,7 +166,6 @@ const halves = [
     border-radius: 50%;
     border: var(--ring) solid var(--tint);
     position: relative;
-    overflow: hidden;
     /* The ring's colour, so the photo's anti-aliased edge blends into the ring. */
     background: var(--tint);
   }
@@ -159,6 +180,7 @@ const halves = [
   .about__placeholder {
     position: absolute;
     inset: 0;
+    border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -169,6 +191,140 @@ const halves = [
     font-size: 13px;
     font-weight: 700;
     white-space: nowrap;
+  }
+
+  /* The circle opens the whole photo. Resting on it, the ring sweeps round in yellow and the photo
+     leans in; the sweep takes as long as the script waits before opening (photo-pop.ts). */
+  @property --sweep {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+  .about__open {
+    position: absolute;
+    inset: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background: none;
+    cursor: zoom-in;
+  }
+  .about__open:focus-visible {
+    outline: none;
+  }
+  .about__photo:has(.about__open:focus-visible) {
+    box-shadow:
+      0 0 0 4px var(--deep),
+      0 0 0 7px var(--accent);
+  }
+  .about__open :global(img) {
+    transition: scale 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .about__photo[data-hover] .about__open :global(img) {
+    scale: 1.08;
+  }
+  .about__photo::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--ring) * -1);
+    padding: var(--ring);
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) var(--sweep), transparent 0);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+    transition: --sweep 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .about__photo[data-hover]::after {
+    --sweep: 360deg;
+  }
+
+  /* The whole photo: a dim layer over the page, the picture in the middle. It grows out of the
+     circle (the script sets where that is), and its corners round off from the circle's. */
+  .about__pop {
+    --fx: 0px;
+    --fy: 0px;
+    --fs: 0.3;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(18 20 24 / 0.62);
+    backdrop-filter: blur(6px);
+    place-items: center;
+    opacity: 0;
+    transition:
+      opacity 0.35s ease,
+      overlay 0.5s allow-discrete,
+      display 0.5s allow-discrete;
+  }
+  .about__pop:popover-open {
+    display: grid;
+    opacity: 1;
+  }
+  .about__frame {
+    position: relative;
+    width: min(calc(min(720px, 86vh) * 0.75), 92vw);
+    aspect-ratio: 3 / 4;
+    translate: var(--fx) var(--fy);
+    scale: var(--fs);
+    transition:
+      translate 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      scale 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .about__frame :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 30px 80px rgb(0 0 0 / 0.45);
+    transition: border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .about__pop:popover-open .about__frame {
+    translate: 0 0;
+    scale: 1;
+  }
+  .about__pop:popover-open .about__frame :global(img) {
+    border-radius: 28px;
+  }
+  @starting-style {
+    .about__pop:popover-open {
+      opacity: 0;
+    }
+    .about__pop:popover-open .about__frame {
+      translate: var(--fx) var(--fy);
+      scale: var(--fs);
+    }
+    .about__pop:popover-open .about__frame :global(img) {
+      border-radius: 50%;
+    }
+  }
+  .about__shut {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--deep);
+    color: var(--tint);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .about__shut:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
   }
 
   .about__close {

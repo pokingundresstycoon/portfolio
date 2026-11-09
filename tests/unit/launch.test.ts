@@ -10,6 +10,7 @@ test('lists every missing piece, in order', () => {
   const bare = {
     ...fullProfile,
     photo: null,
+    photoFull: null,
     contact: { ...fullProfile.contact, whatsapp: null, telegram: null },
   };
   expect(launchProblems(bare, [infraEntry])).toEqual([

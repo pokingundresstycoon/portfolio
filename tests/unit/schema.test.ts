@@ -24,3 +24,9 @@ describe('accepts every real tool', () => {
     for (const tool of real('tools.json')) expect(() => toolSchema.parse(tool)).not.toThrow();
   });
 });
+
+test('the full photo is an image file, or not set yet', () => {
+  expect(profileSchema.safeParse({ ...fullProfile, photoFull: null }).success).toBe(true);
+  expect(profileSchema.safeParse({ ...fullProfile, photoFull: 'mahi-full.jpg' }).success).toBe(true);
+  expect(profileSchema.safeParse({ ...fullProfile, photoFull: 'mahi-full.gif' }).success).toBe(false);
+});

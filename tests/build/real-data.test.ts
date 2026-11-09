@@ -46,10 +46,10 @@ test('the PDF page names every tool of every maker', () => {
   for (const name of names) expect(pdf, name).toContain(name);
 });
 
-test('About shows the real photo, small and light, instead of the placeholder', async () => {
+test('About shows the real photo, small and light, and it cannot be dragged off the page', async () => {
   const { statSync } = await import('node:fs');
   const { DIST } = await import('./dist');
-  const img = html.match(/<img\b[^>]*alt="Mushfikur Rahman, smiling"[^>]*>/)?.[0];
+  const img = html.match(/<img\b[^>]*alt="Mushfikur Rahman"[^>]*>/)?.[0];
   expect(img, 'the photo is on the page').toBeTruthy();
   const src = img!.match(/\ssrc="([^"]+)"/)![1];
   expect(src).toMatch(/^\/_astro\/.+\.webp$/);
@@ -57,4 +57,31 @@ test('About shows the real photo, small and light, instead of the placeholder', 
   expect(img, 'the photo cannot be dragged off the page').toContain('draggable="false"');
   expect(statSync(`${DIST}${src}`).size, 'photo bytes').toBeLessThan(40_000);
   expect(html).not.toContain('Your photo');
+});
+
+test('the whole picture for the pop-up ships as a light WebP', async () => {
+  const { statSync } = await import('node:fs');
+  const { DIST } = await import('./dist');
+  const img = html.match(/<img\b[^>]*alt="Mushfikur Rahman standing by the water"[^>]*>/)?.[0];
+  expect(img, 'the full photo is in the pop-up').toBeTruthy();
+  const src = img!.match(/\ssrc="([^"]+)"/)![1];
+  expect(src).toMatch(/^\/_astro\/.+\.webp$/);
+  expect(img).toContain('draggable="false"');
+  expect(statSync(`${DIST}${src}`).size, 'full photo bytes').toBeLessThan(200_000);
+});
+
+// Phone photos carry the camera, the time and where they were taken. None of that ships.
+test('no image on the site carries hidden photo data, and no original photo ships', async () => {
+  const { readdirSync, readFileSync, statSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { DIST } = await import('./dist');
+  const walk = (dir: string): string[] =>
+    readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [join(dir, n)]));
+  const images = walk(DIST).filter((p) => /\.(jpe?g|png|webp|avif)$/i.test(p));
+  expect(images.filter((p) => /IMG_\d+/i.test(p) || /\.jpe?g$/i.test(p))).toEqual([]);
+  const withData = images.filter((p) => {
+    const bytes = readFileSync(p);
+    return bytes.includes('Exif') || bytes.includes('EXIF') || bytes.includes('GPS');
+  });
+  expect(withData).toEqual([]);
 });
