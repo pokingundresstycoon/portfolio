@@ -1,0 +1,28 @@
+:root {
+  /* Gate Yellow: airport signs are signal yellow on dark grey, the colour you spot first from
+     across a hall; exit-sign green is the second colour. */
+  --deep: #1d2025;
+  --deep-2: #2b2f36;
+  --tint: #eceef1;
+  --card: #ffffff;
+  --accent: #ffd000;
+  --peach: #9be5b0;
+  --muted-deep: #b9bec8;
+  --muted-tint: #4a505c;
+  --line-tint: #d4d8de;
+  --line-deep: rgba(255, 255, 255, 0.16);
+  --live: #3ddc84;
+  /* The focus ring: yellow on graphite. Pale and yellow sections set it to graphite. */
+  --focus: var(--accent);
+
+  --font-display: 'Archivo Condensed', 'Taka', 'Arial Narrow', sans-serif;
+  --font-body: 'Manrope', 'Taka', system-ui, sans-serif;
+
+  /* One size for every main section headline. */
+  --title-section: clamp(56px, 9.5vw, 144px);
+
+  --page: 1240px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --section: clamp(72px, 10vw, 128px);
+  --radius-card: 26px;
+}

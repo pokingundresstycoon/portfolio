@@ -1,0 +1,21 @@
+[
+  {"name": "Meta", "side": "growth", "logo": "meta", "tools": ["Meta Ads Manager", "Meta Events Manager", "Meta Pixel", "Conversions API", "Meta Business Suite"], "note": "Ads Manager, Events Manager, Pixel, Conversions API, Business Suite"},
+  {"name": "TikTok", "side": "growth", "logo": "tiktok", "tools": ["TikTok Ads Manager", "TikTok Pixel"], "note": "Ads Manager, Pixel"},
+  {"name": "Django", "side": "infra", "logo": "django", "tools": ["Django"], "note": "The shop platform"},
+  {"name": "PostgreSQL", "side": "infra", "logo": "postgresql", "tools": ["PostgreSQL", "TimescaleDB", "PgBouncer"], "note": "With TimescaleDB and PgBouncer"},
+  {"name": "Redis", "side": "infra", "logo": "redis", "tools": ["Redis"], "note": "Cache and queues"},
+  {"name": "Celery", "side": "infra", "logo": "celery", "tools": ["Celery"], "note": "Background jobs"},
+  {"name": "Rust", "side": "infra", "logo": "rust", "tools": ["Rust", "Axum"], "note": "With Axum, for the status page"},
+  {"name": "Traefik", "side": "infra", "logo": "traefik", "tools": ["Traefik"], "note": "Routing and HTTPS"},
+  {"name": "Docker", "side": "infra", "logo": "docker", "tools": ["Docker"], "note": "Every service in a container"},
+  {"name": "Kubernetes", "side": "infra", "logo": "kubernetes", "tools": ["Kubernetes"], "note": "Containers across many servers"},
+  {"name": "Coolify", "side": "infra", "logo": "coolify", "tools": ["Coolify"], "note": "Deploys"},
+  {"name": "Terraform", "side": "infra", "logo": "terraform", "tools": ["Terraform"], "note": "Servers and networks as code"},
+  {"name": "Ansible", "side": "infra", "logo": "ansible", "tools": ["Ansible"], "note": "Server setup, the same every time"},
+  {"name": "Cloudflare", "side": "infra", "logo": "cloudflare", "tools": ["Cloudflare R2"], "note": "R2 for files"},
+  {"name": "GitHub", "side": "infra", "logo": "githubactions", "tools": ["GitHub Actions"], "note": "Actions for tests and builds"},
+  {"name": "Prometheus", "side": "infra", "logo": "prometheus", "tools": ["Prometheus"], "note": "Metrics from every service"},
+  {"name": "Grafana", "side": "infra", "logo": "grafana", "tools": ["Grafana"], "note": "Dashboards and alerts"},
+  {"name": "Sentry", "side": "infra", "logo": "sentry", "tools": ["Sentry"], "note": "Errors, as they happen"},
+  {"name": "Claude", "side": "infra", "logo": "claude", "tools": ["Claude Code"], "note": "Claude Code"}
+]

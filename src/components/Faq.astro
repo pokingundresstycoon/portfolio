@@ -1,0 +1,81 @@
+---
+import type { FaqItem } from '../lib/schema';
+
+interface Props {
+  items: FaqItem[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section id="faq" class="faq">
+      <div class="wrap faq__inner">
+        <h2 class="display faq__title">Questions</h2>
+        <div class="faq__list">
+          {items.map((item) => (
+            <details>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .faq {
+    --focus: var(--deep);
+    background: var(--tint);
+    color: var(--deep);
+    padding-block: var(--section);
+  }
+  .faq__inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 32px 64px;
+    align-items: start;
+  }
+  .faq__title {
+    font-size: clamp(56px, 8vw, 120px);
+  }
+  .faq__list {
+    border-top: 1px solid var(--line-tint);
+  }
+  details {
+    border-bottom: 1px solid var(--line-tint);
+  }
+  summary {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '+';
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--muted-tint);
+  }
+  details[open] summary::after {
+    content: '–';
+  }
+  details p {
+    padding-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted-tint);
+    max-width: 620px;
+  }
+</style>

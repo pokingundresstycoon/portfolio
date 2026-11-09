@@ -1,0 +1,41 @@
+---
+const PATHS = {
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  'arrow-up-right': '<path d="M7 17L17 7M8 7h9v9"/>',
+  'arrow-up': '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  download: '<path d="M12 4v12M6 11l6 6 6-6M5 20h14"/>',
+  whatsapp: '<path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-5.1A8.5 8.5 0 1 1 21 11.5z"/>',
+  mail: '<path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/>',
+  send: '<path d="M21 4L3 11l7 2 2 7z"/><path d="M10 13l4-4"/>',
+  github:
+    '<path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  pulse: '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  person: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  phone:
+    '<path d="M21.5 16.4v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.6 3.7 2 2 0 0 1 3.6 1.5h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L7.5 9.3a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>',
+  copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+} as const;
+
+interface Props {
+  name: keyof typeof PATHS;
+  size?: number;
+  stroke?: number;
+}
+
+const { name, size = 18, stroke = 2 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={stroke}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  set:html={PATHS[name]}
+/>

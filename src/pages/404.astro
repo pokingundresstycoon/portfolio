@@ -1,0 +1,42 @@
+---
+import Nav from '../components/Nav.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found · Mushfikur Rahman" description="This page doesn't exist." path="/404/" noindex>
+  <Nav />
+  <main class="nf wrap">
+    <h1 class="display nf__title">Page not found</h1>
+    <p class="nf__text">This page doesn’t exist, or it moved.</p>
+    <a href="/" class="nf__home">Back home</a>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .nf__title {
+    font-size: clamp(64px, 12vw, 180px);
+  }
+  .nf__text {
+    font-size: 18px;
+    color: var(--muted-deep);
+  }
+  .nf__home {
+    display: inline-flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 0 24px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--deep);
+    font-weight: 800;
+    text-decoration: none;
+  }
+</style>

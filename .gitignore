@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-fixture/
+.astro/
+test-results/
+playwright-report/
+.superpowers/
+.env
+
+# Design boards, specs and plans stay on this computer; only the logo credits are published.
+docs/*
+!docs/logo-sources.md

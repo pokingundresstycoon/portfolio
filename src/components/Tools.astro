@@ -1,0 +1,186 @@
+---
+import { loadTools } from '../lib/load';
+import Icon from './Icon.astro';
+
+const makers = loadTools();
+---
+
+<section class="tools" aria-labelledby="tools-title">
+  <div class="wrap">
+    <h2 id="tools-title" class="display tools__title">Tools I work with</h2>
+    <p class="tools__legend"><span class="tools__dot" aria-hidden="true"></span><span data-legend>Ads and tracking</span></p>
+    <!-- One cell per maker, in a grid of thin lines. -->
+    <ul class="tools__grid">
+      {
+        makers.map((m) => (
+          <li class="maker" data-maker data-growth={m.side === 'growth' ? '' : undefined}>
+            <div class="maker__top">
+              {m.logo ? (
+                <img src={`/logos/${m.logo}.svg`} alt="" width="38" height="38" loading="lazy" decoding="async" />
+              ) : (
+                <span class="display maker__letter" data-letter aria-hidden="true">
+                  {m.name.charAt(0)}
+                </span>
+              )}
+              {m.side === 'growth' && <span class="tools__dot" aria-hidden="true" />}
+            </div>
+            <p class="display maker__name">{m.name}</p>
+            <p class="maker__note">{m.note}</p>
+            {m.side === 'growth' && <span class="visually-hidden">Ads and tracking</span>}
+          </li>
+        ))
+      }
+      <!-- The last cell is an invitation, so the grid ends full. -->
+      <li class="maker maker--ask">
+        <a href="/#contact" class="maker__ask">
+          <span class="maker__top"><Icon name="arrow-up-right" size={30} stroke={2.2} /></span>
+          <span class="display maker__name">Something else?</span>
+          <span class="maker__note">Ask me about your stack</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .tools {
+    --focus: var(--deep);
+    background: var(--tint);
+    color: var(--deep);
+    padding-bottom: var(--section);
+    /* Reach a pixel over the pale section above, so no navy hairline shows at the join on zoomed
+       phones. */
+    box-shadow: 0 -1px 0 var(--tint);
+  }
+  .tools__title {
+    font-size: var(--title-section);
+    text-align: center;
+    text-wrap: balance;
+  }
+  .tools__legend {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted-tint);
+  }
+  .tools__dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    /* A graphite edge, as on a yellow sign, so the dot shows on the pale page and white cards. */
+    box-shadow: inset 0 0 0 1.5px var(--deep);
+  }
+
+  /* The lines are drawn by each cell on its right and lower edge; the frame clips the outer ones,
+     so the grid stays whole whatever the number of makers. */
+  .tools__grid {
+    margin: clamp(28px, 4vw, 40px) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    background: var(--card);
+    border: 1px solid var(--line-tint);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .maker {
+    display: flex;
+    flex-direction: column;
+    min-height: 168px;
+    padding: clamp(18px, 2vw, 24px) clamp(16px, 1.8vw, 22px);
+    box-shadow:
+      1px 0 0 var(--line-tint),
+      0 1px 0 var(--line-tint),
+      1px 1px 0 var(--line-tint);
+  }
+  .maker__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .maker__top img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+  }
+  .maker__letter {
+    font-size: 38px;
+    line-height: 1;
+  }
+  .maker__name {
+    margin-top: auto;
+    font-size: clamp(22px, 2.2vw, 28px);
+  }
+  .maker__note {
+    margin-top: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--muted-tint);
+  }
+
+  /* Two classes, so the phone padding for every cell doesn't land on this one: its link pads it. */
+  .maker.maker--ask {
+    padding: 0;
+    background: var(--deep);
+    color: var(--tint);
+  }
+  .maker__ask {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(18px, 2vw, 24px) clamp(16px, 1.8vw, 22px);
+    color: inherit;
+    text-decoration: none;
+  }
+  .maker__ask:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: -6px;
+  }
+  .maker__ask .maker__top {
+    color: var(--accent);
+  }
+  .maker__ask .maker__note {
+    color: var(--muted-deep);
+  }
+
+  @media (max-width: 900px) {
+    .tools__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 600px) {
+    .tools__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-radius: 18px;
+    }
+    .maker {
+      min-height: 120px;
+      padding: 16px 14px;
+    }
+    .maker__ask {
+      padding: 16px 14px;
+    }
+    .maker__top {
+      margin-bottom: 10px;
+    }
+    .maker__top img {
+      width: 30px;
+      height: 30px;
+    }
+    .maker__letter {
+      font-size: 30px;
+    }
+    .maker__note {
+      font-size: 12.5px;
+    }
+  }
+</style>

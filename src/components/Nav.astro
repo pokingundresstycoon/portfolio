@@ -1,0 +1,134 @@
+---
+import Icon from './Icon.astro';
+---
+
+<header class="nav">
+  <div class="nav__bar">
+    <a href="/#top" class="nav__mark display">Mahi<span>.</span></a>
+    <nav class="nav__links" aria-label="Sections">
+      <a href="/#about">About</a>
+      <a href="/#work">Work</a>
+      <a href="/#process">Process</a>
+    </nav>
+    <a href="/#contact" class="nav__cta">Book a seat <Icon name="arrow-up-right" size={14} stroke={2.4} /></a>
+  </div>
+</header>
+
+<script>
+  import '../scripts/nav';
+</script>
+
+<style>
+  /* The nav floats over the page, so hiding it at the top leaves no gap. Only the bar takes
+     clicks; the strip around it lets them through. */
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10;
+    padding: 12px clamp(12px, 3vw, 24px) 0;
+    pointer-events: none;
+  }
+  /* Out of sight at the top of the page; it comes in over the first 120px of scrolling. It is
+     faded and moved above the screen rather than made invisible, so its links stay in the tab
+     order. The timeline sits in its own rule: the minifier would otherwise fold it into the
+     shorthand. */
+  @supports (animation-timeline: scroll()) {
+    .nav {
+      animation: nav-in linear both;
+    }
+    header.nav {
+      animation-timeline: scroll(root);
+      animation-range: 0 120px;
+    }
+    /* With reduced motion the site turns animations off. This one is let through because here it
+       moves nothing: it switches the nav on once you've scrolled at all. */
+    @media (prefers-reduced-motion: reduce) {
+      .nav {
+        animation: nav-in linear both !important;
+      }
+      header.nav {
+        animation-timeline: scroll(root) !important;
+        animation-range: 0 1px !important;
+      }
+    }
+  }
+  /* Browsers without scroll-linked animation: the script marks the nav while you're at the top. */
+  @supports not (animation-timeline: scroll()) {
+    .nav {
+      transition:
+        opacity 0.25s ease,
+        translate 0.25s ease;
+    }
+    .nav[data-at-top] {
+      opacity: 0;
+      translate: 0 -100%;
+    }
+  }
+  /* Tabbing into it shows it wherever you are. Only keyboard focus counts: a click leaves focus on
+     the link, and the nav must still go when you scroll back to the top. */
+  .nav:has(:focus-visible) {
+    animation: none;
+    opacity: 1;
+    translate: none;
+  }
+  @keyframes nav-in {
+    from {
+      opacity: 0;
+      translate: 0 -100%;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+  .nav__bar {
+    pointer-events: auto;
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 6px 6px 22px;
+    border-radius: 999px;
+    background: var(--deep-2);
+    border: 1px solid var(--line-deep);
+  }
+  .nav__mark {
+    text-decoration: none;
+    font-size: 32px;
+  }
+  .nav__mark span {
+    color: var(--accent);
+  }
+  .nav__links {
+    display: flex;
+    gap: 24px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .nav__links a {
+    text-decoration: none;
+  }
+  .nav__links a:hover {
+    color: var(--accent);
+  }
+  .nav__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: var(--tint);
+    color: var(--deep);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  @media (max-width: 760px) {
+    .nav__links {
+      display: none;
+    }
+  }
+</style>

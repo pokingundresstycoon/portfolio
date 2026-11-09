@@ -1,0 +1,50 @@
+{
+  "started": "2026-03-16",
+  "commits": "2,700",
+  "shopsLive": "10+",
+  "uptime": { "value": "99.97%", "label": "checkout uptime, 90 days" },
+  "milestones": [
+    {
+      "when": "Mar 2026",
+      "title": "First commit",
+      "text": "Paperbase starts: a shop builder for sellers in Bangladesh who sell on cash on delivery."
+    },
+    {
+      "when": "Sep 10",
+      "title": "Five shop servers become one",
+      "text": "Every merchant moves onto a single platform, each shop still on its own domain. A fix now ships once and reaches every shop.",
+      "visual": "merge"
+    },
+    {
+      "when": "Sep 12",
+      "title": "An honest audit",
+      "text": "A full audit logs 118 problems. One of them: a 12-item order took 521 database queries. The critical ones get fixed."
+    },
+    {
+      "when": "Sep",
+      "title": "Ads that count the right sale",
+      "text": "Each shop chooses when its ads count a sale: when the order is placed, or only once the seller confirms it."
+    },
+    {
+      "when": "Sep 30",
+      "title": "A fraud check before shipping",
+      "text": "Before a parcel goes out, the seller sees the buyer’s delivery record across couriers: delivered, cancelled, success rate."
+    },
+    {
+      "when": "Oct",
+      "title": "A status page that stays up",
+      "text": "Written in Rust and run on its own server, so it stays up even when the platform doesn’t.",
+      "link": { "label": "status.paperbase.me", "href": "https://status.paperbase.me" }
+    },
+    {
+      "when": "Oct 9",
+      "title": "Secure on every shop’s own domain",
+      "text": "Every shop is served over HTTPS, on paperbase.me or on the merchant’s own address."
+    },
+    {
+      "when": "Today",
+      "title": "Still shipping",
+      "text": "Five repositories, with new releases most weeks."
+    }
+  ]
+}

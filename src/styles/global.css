@@ -1,0 +1,161 @@
+@font-face {
+  font-family: 'Archivo Condensed';
+  src: url('/fonts/archivo-condensed-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/manrope.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Taka';
+  src: url('/fonts/taka-900.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+09F3;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--deep);
+  color: var(--tint);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+ul {
+  margin: 0;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.86;
+  letter-spacing: -0.005em;
+}
+
+.wrap {
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A split-flap tile, as on a departures board: two halves split by a hinge line, the character in
+   the condensed display face. Its size comes from --w, set by whatever holds it. */
+.flap {
+  --w: 26px;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--w);
+  height: calc(var(--w) * 1.42);
+  border-radius: calc(var(--w) * 0.13);
+  background: linear-gradient(#2c3037 0 50%, #23272d 50% 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 0 rgba(0, 0, 0, 0.35);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--w);
+  line-height: 1;
+  color: var(--tint);
+}
+.flap::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1.5px;
+  background: rgba(0, 0, 0, 0.6);
+}
+/* Each change of character folds the tile once; scripts alternate the two names so the fold
+   restarts without a forced layout. */
+@media (prefers-reduced-motion: no-preference) {
+  .flap[data-f='0'] {
+    animation: flap-a 60ms ease-out;
+  }
+  .flap[data-f='1'] {
+    animation: flap-b 60ms ease-out;
+  }
+}
+@keyframes flap-a {
+  from {
+    transform: perspective(200px) rotateX(-60deg);
+  }
+}
+@keyframes flap-b {
+  from {
+    transform: perspective(200px) rotateX(-60deg);
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

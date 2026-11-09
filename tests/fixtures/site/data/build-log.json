@@ -1,0 +1,19 @@
+{
+  "started": "2026-01-01",
+  "commits": "1,111",
+  "shopsLive": "7+",
+  "uptime": { "value": "99.90%", "label": "checkout uptime, 90 days" },
+  "milestones": [
+    { "when": "Jan 2026", "title": "First test step", "text": "The test story starts here." },
+    { "when": "Feb 2", "title": "Two become one", "text": "Five test servers become one.", "visual": "merge" },
+    { "when": "Mar 3", "title": "A test audit", "text": "A test audit finds test problems." },
+    { "when": "Apr", "title": "Test ads count sales", "text": "Test ads count the right test sale." },
+    {
+      "when": "May 5",
+      "title": "Status goes up",
+      "text": "A test status page goes up.",
+      "link": { "label": "status.paperbase.me", "href": "https://status.paperbase.me" }
+    },
+    { "when": "Today", "title": "Still testing", "text": "Still shipping test releases." }
+  ]
+}

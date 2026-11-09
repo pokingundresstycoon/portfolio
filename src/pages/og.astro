@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadProfile } from '../lib/load';
+
+// The 1200×630 share image (scripts/render-assets.ts screenshots it to /og.png).
+const profile = loadProfile();
+const host = new URL('/', Astro.site).host;
+---
+
+<Base title="Mushfikur Rahman · Share image" description="Share image." path="/og/" noindex>
+  <main class="og">
+    <p class="og__status"><span aria-hidden="true"></span>{profile.statusLine}</p>
+    <p class="display og__name">{profile.name}</p>
+    <p class="display og__role">{profile.role}</p>
+    <div class="og__nums">
+      <p><b class="display">{profile.numbers.orders}</b> orders driven</p>
+      <p><b class="display">{profile.numbers.sales}</b> client sales</p>
+      <p class="og__host">{host}</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .og {
+    width: 1200px;
+    height: 630px;
+    padding: 64px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    overflow: hidden;
+  }
+  .og__status {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--line-deep);
+    color: var(--muted-deep);
+  }
+  .og__status span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .og__name {
+    font-size: 150px;
+  }
+  .og__role {
+    font-size: 52px;
+    color: var(--accent);
+  }
+  .og__nums {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .og__nums p {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 16px;
+    background: var(--deep-2);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--muted-deep);
+  }
+  .og__nums b {
+    font-size: 40px;
+    color: var(--tint);
+  }
+  .og__nums .og__host {
+    margin-left: auto;
+    background: var(--accent);
+    color: var(--deep);
+    font-size: 24px;
+    font-weight: 800;
+  }
+</style>

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["-u", "AI_AGENT", "-u", "CLAUDECODE", "npx", "astro", "dev", "--port", "4321"],
+      "port": 4321
+    }
+  ]
+}

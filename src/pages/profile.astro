@@ -1,0 +1,225 @@
+---
+import Base from '../layouts/Base.astro';
+import { contactLinks, displayPhone } from '../lib/contact';
+import { loadBuildLog, loadProfile, loadTools } from '../lib/load';
+
+// Print layout for the PDF profile (scripts/render-assets.ts). Not meant to be browsed.
+const profile = loadProfile();
+const log = loadBuildLog();
+const since = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(log.started));
+const tools = loadTools();
+const links = contactLinks(profile);
+const site = new URL('/', Astro.site);
+const host = site.host;
+// Two lines: where to read and write to me, then the chat apps.
+const web = [profile.contact.email, host, profile.github.replace('https://', '')];
+// One number shown once when it's both the phone and the WhatsApp.
+const { whatsapp, phone, telegram } = profile.contact;
+const chat = [
+  whatsapp && phone === whatsapp && `Phone and WhatsApp ${displayPhone(phone)}`,
+  phone && phone !== whatsapp && `Phone ${displayPhone(phone)}`,
+  whatsapp && phone !== whatsapp && `WhatsApp ${displayPhone(whatsapp)}`,
+  telegram && `Telegram @${telegram}`,
+].filter(Boolean);
+const growth = ['Social Media Strategy & Community Management', 'Performance Marketing & Paid Acquisition', 'Campaign Analytics & Attribution'];
+const infra = ['Platform & Reliability Engineering', 'Self-hosted Cloud Infrastructure', 'Observability & Incident Response'];
+const numbers = [
+  [profile.numbers.orders, 'orders driven for client brands'],
+  [profile.numbers.sales, 'in client sales'],
+  ...(profile.numbers.businessesGrown ? [[profile.numbers.businessesGrown, 'businesses grown']] : []),
+];
+---
+
+<Base title="Mushfikur Rahman · Work profile" description="Work profile of Mushfikur Rahman." path="/profile/" noindex>
+  <main class="pdf">
+    <header class="pdf__head">
+      <p class="display pdf__name">{profile.name}</p>
+      <p class="display pdf__role">{profile.role}</p>
+      <p class="pdf__contact">
+        {web.join(' · ')}
+        {
+          chat.length > 0 && (
+            <>
+              <br />
+              {chat.join(' · ')}
+            </>
+          )
+        }
+      </p>
+      {links.whatsapp && <p class="visually-hidden">{links.whatsapp}</p>}
+    </header>
+
+    <section class="pdf__nums">
+      {
+        numbers.map(([value, label]) => (
+          <p class="pdf__num">
+            <b class="display">{value}</b>
+            <span>{label}</span>
+          </p>
+        ))
+      }
+    </section>
+
+    <section>
+      <h2 class="display pdf__h">What I do</h2>
+      <p class="pdf__lead">
+        I build the systems online shops run on, and I run the ads and pages that fill them with buyers. One person, the whole loop:
+        from server to sale.
+      </p>
+      <div class="pdf__cols">
+        <div><h3>Growth</h3><ul>{growth.map((s) => <li>{s}</li>)}</ul></div>
+        <div><h3>Infrastructure</h3><ul>{infra.map((s) => <li>{s}</li>)}</ul></div>
+      </div>
+      <p class="pdf__meet">Where they meet: <b>Conversion Signal Engineering</b>, Pixel and Conversions API that can count a cash-on-delivery sale only once the seller confirms it.</p>
+    </section>
+
+    <section>
+      <h2 class="display pdf__h">Selected work</h2>
+      <p class="pdf__lead">
+        <b>Paperbase</b>, the commerce platform I build and run for sellers in Bangladesh:
+        {`${log.shopsLive} shops live, ${log.uptime.value} ${log.uptime.label}, ${log.commits} commits since ${since}.`}
+      </p>
+      <ol class="pdf__log">
+        {
+          log.milestones.map((m) => (
+            <li>
+              <b>{m.when}</b> {m.title}
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="pdf__cols">
+      <div>
+        <h2 class="display pdf__h">Tools</h2>
+        <p class="pdf__tools"><b>Growth:</b> {tools.filter((t) => t.side === 'growth').flatMap((t) => t.tools).join(', ')}</p>
+        <p class="pdf__tools"><b>Infrastructure:</b> {tools.filter((t) => t.side === 'infra').flatMap((t) => t.tools).join(', ')}</p>
+      </div>
+      <div>
+        <h2 class="display pdf__h">How I work</h2>
+        <p class="pdf__tools">Audit → Plan → Launch → Measure. First what is really happening, then one clear plan with the numbers we will judge it by, then a finished launch, then weekly results in orders, cost per order and uptime.</p>
+      </div>
+    </section>
+
+    <footer class="pdf__foot">Always up to date at {host}</footer>
+  </main>
+</Base>
+
+<style>
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  :global(body) {
+    background: #fff;
+    color: var(--deep);
+  }
+  .pdf {
+    max-width: 186mm;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 11.5pt;
+    line-height: 1.45;
+  }
+  .pdf__head {
+    background: var(--deep);
+    color: var(--tint);
+    border-radius: 14px;
+    padding: 20px 24px;
+  }
+  .pdf__name {
+    font-size: 44pt;
+  }
+  .pdf__role {
+    margin-top: 6px;
+    font-size: 17pt;
+    color: var(--accent);
+  }
+  .pdf__contact {
+    margin-top: 12px;
+    font-size: 10pt;
+    color: var(--muted-deep);
+  }
+  .pdf__nums {
+    display: flex;
+    gap: 10px;
+  }
+  .pdf__num {
+    flex: 1;
+    border-radius: 12px;
+    background: var(--tint);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+  }
+  .pdf__num:first-child {
+    background: var(--accent);
+  }
+  .pdf__num b {
+    font-size: 28pt;
+  }
+  .pdf__num span {
+    font-size: 9.5pt;
+    font-weight: 700;
+  }
+  .pdf__h {
+    font-size: 20pt;
+    margin-bottom: 6px;
+  }
+  .pdf__lead {
+    color: var(--muted-tint);
+  }
+  .pdf__cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 8px;
+  }
+  .pdf__cols h3 {
+    margin: 0 0 4px;
+    font-size: 9.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .pdf__cols ul {
+    margin: 0;
+    padding-left: 16px;
+  }
+  .pdf__meet,
+  .pdf__tools {
+    margin-top: 8px;
+    color: var(--muted-tint);
+  }
+  .pdf__meet b,
+  .pdf__tools b {
+    color: var(--deep);
+  }
+  /* The build log in two columns, each step on one line. */
+  .pdf__log {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    /* Two columns that read down, then across, so the dates stay in order. */
+    columns: 2;
+    column-gap: 20px;
+    color: var(--muted-tint);
+  }
+  .pdf__log li {
+    break-inside: avoid;
+    margin-bottom: 4px;
+  }
+  .pdf__log b {
+    display: inline-block;
+    min-width: 58px;
+    color: var(--deep);
+  }
+  .pdf__foot {
+    border-top: 2px solid var(--deep);
+    padding-top: 8px;
+    font-size: 10pt;
+    font-weight: 700;
+  }
+</style>

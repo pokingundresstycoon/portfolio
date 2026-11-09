@@ -1,0 +1,478 @@
+---
+import { isoScene } from '../lib/iso';
+import { PROCESS_SCENES } from '../lib/process-scenes';
+
+const steps = [
+  {
+    word: 'Audit',
+    text: 'First I look at what is really happening: your pages, ads, servers and the numbers behind them.',
+    chips: ['Ad account review', 'Page audit', 'Infrastructure check'],
+  },
+  {
+    word: 'Plan',
+    text: 'One clear plan with the numbers we will judge it by, so nobody argues about success later.',
+    chips: ['Goals in orders', 'Budget and channels', 'Architecture'],
+  },
+  {
+    word: 'Launch',
+    text: 'Campaigns go live and systems ship, finished properly. Nothing left half-wired.',
+    chips: ['Campaign setup', 'Pixel and Conversions API', 'Deploy and monitor'],
+  },
+  {
+    word: 'Measure',
+    text: 'Results in orders, cost per order and uptime, then we make it better every week.',
+    chips: ['Reporting', 'Optimisation', 'Status checks'],
+  },
+];
+const art = PROCESS_SCENES.map((scene) => ({ shapes: isoScene(scene.items, { pad: scene.pad }), lens: scene.lens }));
+---
+
+
+<section id="process" class="process">
+  <div class="wrap">
+    <div class="process__head">
+      <h2 class="display process__title">How I work</h2>
+      <p class="process__sub">The same four steps, whether it’s ads or servers.</p>
+    </div>
+    <ol class="stack">
+      {
+        steps.map((s, i) => (
+          <li class="card">
+            <svg class="card__art" viewBox="0 0 220 220" aria-hidden="true">
+              {art[i].shapes.map((shape) =>
+                shape.kind === 'box' ? (
+                  <g class:list={[`m-${shape.material}`, shape.part]}>
+                    {shape.faces.map((f) => (
+                      <polygon class={f.side} points={f.points} />
+                    ))}
+                  </g>
+                ) : shape.kind === 'poly' ? (
+                  <polygon class={shape.part} points={shape.points} />
+                ) : (
+                  <polyline class={shape.part} points={shape.points} />
+                ),
+              )}
+              {art[i].lens && (
+                <g class="lens">
+                  <circle class="lens__glass" cx="160" cy="70" r="30" />
+                  <path class="lens__handle" d="M182 92l20 20" />
+                  <path class="lens__glint" d="M146 60a16 16 0 0 1 12 -8" />
+                </g>
+              )}
+            </svg>
+            <div class="card__body">
+              <p class="card__n">0{i + 1} / 04</p>
+              <p class="display card__word">{s.word}</p>
+              <p class="card__text">{s.text}</p>
+              <ul class="card__chips">
+                {s.chips.map((c) => (
+                  <li>{c}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process {
+    padding-block: var(--section);
+  }
+  .process__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+  .process__title {
+    font-size: var(--title-section);
+    text-align: center;
+  }
+  .process__sub {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--muted-deep);
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .stack {
+    --stack-top: 96px;
+    --peek: 26px;
+    margin: clamp(40px, 5vw, 64px) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 28vw, 320px);
+    gap: 40px;
+    align-items: center;
+    min-height: 400px;
+    padding: 40px 48px;
+    border-radius: 32px;
+    background: var(--bg);
+    color: var(--fg);
+    box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.35);
+    transform-origin: 50% 0;
+  }
+  .card:nth-child(1) {
+    --i: 0;
+    --bg: var(--tint);
+    --fg: var(--deep);
+    --soft: var(--muted-tint);
+    --recede: 0.91;
+  }
+  .card:nth-child(2) {
+    --i: 1;
+    --bg: var(--accent);
+    --fg: var(--deep);
+    --soft: var(--deep);
+    --recede: 0.94;
+  }
+  .card:nth-child(3) {
+    --i: 2;
+    --bg: var(--deep-2);
+    --fg: var(--tint);
+    --soft: var(--muted-deep);
+    --number: var(--accent);
+    --recede: 0.97;
+    box-shadow:
+      0 -18px 40px rgba(0, 0, 0, 0.35),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .card:nth-child(4) {
+    --i: 3;
+    --bg: var(--peach);
+    --fg: var(--deep);
+    --soft: var(--deep);
+  }
+  .card__art {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  /* Isometric drawing: each material is three shades, light on top. */
+  .m-navy .t {
+    fill: #4a505c;
+  }
+  .m-navy .l {
+    fill: var(--deep-2);
+  }
+  .m-navy .r {
+    fill: var(--deep);
+  }
+  .m-ice .t {
+    fill: #fff;
+  }
+  .m-ice .l {
+    fill: var(--tint);
+  }
+  .m-ice .r {
+    fill: var(--muted-deep);
+  }
+  .m-orange .t {
+    fill: #ffe066;
+  }
+  .m-orange .l {
+    fill: var(--accent);
+  }
+  .m-orange .r {
+    fill: #d4ab00;
+  }
+  .led {
+    fill: var(--tint);
+  }
+  .led--alert {
+    fill: var(--accent);
+  }
+  .pole {
+    fill: none;
+    stroke: var(--deep);
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+  .flag {
+    fill: var(--tint);
+  }
+  .shadow {
+    fill: var(--deep-2);
+    opacity: 0.25;
+  }
+  .trail {
+    fill: none;
+    stroke: var(--peach);
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+  .lens__glass {
+    fill: var(--tint);
+    fill-opacity: 0.55;
+    stroke: var(--deep);
+    stroke-width: 10;
+  }
+  .lens__handle {
+    fill: none;
+    stroke: var(--deep);
+    stroke-width: 14;
+    stroke-linecap: round;
+  }
+  .lens__glint {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+  .card__body {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    container-type: inline-size;
+  }
+  .card__n {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--number, var(--fg));
+  }
+  /* Sized to its own column, so the longest word (MEASURE) never reaches the drawing. */
+  .card__word {
+    margin-top: 14px;
+    font-size: clamp(56px, 19cqi, 150px);
+  }
+  .card__text {
+    margin-top: 18px;
+    max-width: 520px;
+    font-size: 19px;
+    line-height: 1.55;
+    font-weight: 600;
+    color: var(--soft);
+  }
+  .card__chips {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .card__chips li {
+    font-size: 13px;
+    font-weight: 800;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1.5px solid color-mix(in srgb, currentColor 50%, transparent);
+  }
+
+  /* Phones and small tablets: the drawing on top, the words below. */
+  @media (max-width: 820px) {
+    .stack {
+      --stack-top: 88px;
+      --peek: 16px;
+      gap: 20px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+      min-height: 0;
+      padding: 24px;
+      border-radius: 24px;
+    }
+    .card__art {
+      align-self: center;
+      width: min(180px, 50vw);
+    }
+    .card__word {
+      margin-top: 8px;
+      font-size: clamp(48px, 24cqi, 96px);
+    }
+    .card__text {
+      margin-top: 12px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .card__chips {
+      margin-top: 14px;
+    }
+  }
+
+  /* The stack: each card sticks a strip lower than the one before, so earlier steps peek out
+     above it. Only where a whole card fits under those strips; shorter screens get a plain list. */
+  @media (min-width: 821px) and (min-height: 620px), (max-width: 820px) and (min-height: 600px) {
+    /* Room after the last card lands, so the finished stack holds still long enough to read. */
+    .stack::after {
+      content: '';
+      height: 50vh;
+      height: 50svh;
+    }
+    .card {
+      position: sticky;
+      top: calc(var(--stack-top) + var(--i) * var(--peek));
+      /* Every card reaches as far down as the last one, so the stack leaves together. */
+      margin-bottom: calc((3 - var(--i)) * var(--peek));
+    }
+
+    /* As the next card rises over it, a card shrinks back and dims, so the stack reads in depth. */
+    @supports (timeline-scope: none) {
+      @media (prefers-reduced-motion: no-preference) {
+        .stack {
+          timeline-scope: --card-2, --card-3, --card-4;
+          /* Starts once the next card is about to cover this one: late on a laptop, where cards
+             are short, almost at once on a phone, where they fill the screen. */
+          --recede-from: entry 60%;
+        }
+        @media (max-width: 820px) {
+          .stack {
+            --recede-from: entry 10%;
+          }
+        }
+        .card:nth-child(2) {
+          view-timeline: --card-2;
+        }
+        .card:nth-child(3) {
+          view-timeline: --card-3;
+        }
+        .card:nth-child(4) {
+          view-timeline: --card-4;
+        }
+        .card:nth-child(-n + 3),
+        .card:nth-child(-n + 3)::after {
+          animation: recede linear both;
+          animation-range: var(--recede-from) entry 100%;
+        }
+        .card:nth-child(-n + 3)::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          background: var(--deep);
+          opacity: 0;
+          pointer-events: none;
+          animation-name: dim;
+        }
+        .card:nth-child(1),
+        .card:nth-child(1)::after {
+          animation-timeline: --card-2;
+        }
+        .card:nth-child(2),
+        .card:nth-child(2)::after {
+          animation-timeline: --card-3;
+        }
+        .card:nth-child(3),
+        .card:nth-child(3)::after {
+          animation-timeline: --card-4;
+        }
+      }
+    }
+  }
+  /* Stacked on a phone, every card is one height, sized to the screen; the drawing takes the room
+     the words leave. */
+  @media (max-width: 820px) and (min-height: 600px) {
+    .card {
+      height: calc(100svh - var(--stack-top) - 3 * var(--peek) - 20px);
+      max-height: 620px;
+    }
+    .card__art {
+      flex: 1 1 0;
+      min-height: 0;
+      max-height: 220px;
+      width: auto;
+      margin-block: auto;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    /* The pieces settle in as their card rises into view, tied to the scroll, and run backwards
+       when scrolling up. Timed within `entry` only: a sticky card stretches its other ranges by
+       the whole distance it stays stuck. */
+    @supports (animation-timeline: view()) {
+      .card__art {
+        view-timeline: --art;
+      }
+      .card__art .rise {
+        animation: iso-settle linear both;
+      }
+      .card__art .grow {
+        transform-box: fill-box;
+        transform-origin: 50% 100%;
+        animation: iso-grow linear both;
+      }
+      .card__art .lens {
+        animation: iso-appear linear both;
+      }
+      /* A rule of its own: in the same rule the minifier folds it into the shorthand, which
+         browsers reject. */
+      .card__art :is(.rise, .grow, .lens) {
+        animation-timeline: --art;
+      }
+      .card__art .r0,
+      .card__art .g0 {
+        animation-range: entry 0% entry 70%;
+      }
+      .card__art .r1,
+      .card__art .g1 {
+        animation-range: entry 10% entry 80%;
+      }
+      .card__art .r2,
+      .card__art .g2 {
+        animation-range: entry 20% entry 90%;
+      }
+      .card__art .r3,
+      .card__art .g3,
+      .card__art .lens {
+        animation-range: entry 30% entry 100%;
+      }
+    }
+    /* The release keeps hovering over its pad. */
+    .card__art .lift {
+      animation: iso-hover 3s ease-in-out infinite;
+    }
+    .card__art .trail {
+      animation: iso-flicker 1.5s ease-in-out infinite alternate;
+    }
+  }
+  @keyframes iso-settle {
+    from {
+      opacity: 0;
+      transform: translateY(-18px);
+    }
+  }
+  @keyframes iso-grow {
+    from {
+      transform: scaleY(0);
+    }
+  }
+  @keyframes iso-appear {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes iso-hover {
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes iso-flicker {
+    to {
+      opacity: 0.35;
+    }
+  }
+  @keyframes recede {
+    to {
+      scale: var(--recede);
+    }
+  }
+  @keyframes dim {
+    to {
+      opacity: 0.2;
+    }
+  }
+</style>

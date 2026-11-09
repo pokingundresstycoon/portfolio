@@ -1,0 +1,325 @@
+---
+import { contactLinks, displayPhone } from '../lib/contact';
+import { PLANE } from '../lib/plane';
+import type { Profile } from '../lib/schema';
+import Icon from './Icon.astro';
+
+interface Props {
+  profile: Profile;
+}
+
+const { profile } = Astro.props;
+const links = contactLinks(profile);
+
+type Gate = { code: string; name: string; use: string; href: string; icon: 'whatsapp' | 'mail' | 'send' | 'phone'; email?: string; shows?: string };
+// One gate per way to reach me. Only the ones set in the profile show; email always does.
+const gates = [
+  links.whatsapp && { code: 'WA', name: 'WhatsApp', use: 'For quick questions and voice notes', href: links.whatsapp, icon: 'whatsapp' },
+  { code: 'EM', name: 'Email', use: 'For briefs, files and quotes', href: links.email, icon: 'mail', email: profile.contact.email },
+  links.telegram && { code: 'TG', name: 'Telegram', use: 'If Telegram is what you use', href: links.telegram, icon: 'send' },
+  links.phone && { code: 'PH', name: 'Phone', use: 'When it’s easier to talk it through', href: links.phone, icon: 'phone', shows: displayPhone(profile.contact.phone!) },
+].filter(Boolean) as Gate[];
+const [user, domain] = profile.contact.email.split('@');
+---
+
+<section id="contact" class="contact" aria-labelledby="contact-title">
+  <div class="wrap contact__inner">
+    <div class="contact__head">
+      <div>
+        <h2 id="contact-title" class="display contact__title">
+          <svg class="contact__plane" viewBox="0 0 24 24" aria-hidden="true" set:html={PLANE} />Book a seat
+        </h2>
+        <p class="contact__lede">Pick the way you’d like to talk. Every gate comes to me.</p>
+      </div>
+      <p class="contact__clock" data-clock>
+        It’s <span class="contact__flaps" aria-hidden="true">{[...'00:00'].map(() => <span class="flap">{' '}</span>)}</span><time
+          class="visually-hidden"
+          data-clock-time></time> in Dhaka now
+      </p>
+    </div>
+
+    <ul class="gates" data-count={gates.length}>
+      {
+        gates.map((g) => (
+          <li class="gate" data-gate={g.code}>
+            <div class="gate__top">
+              <span>Gate</span>
+              <Icon name={g.icon} size={20} />
+            </div>
+            <span class="gate__code" aria-hidden="true">
+              {[...g.code].map((c) => (
+                <span class="flap">{c}</span>
+              ))}
+            </span>
+            <h3 class="display gate__name">
+              <a class="gate__link" href={g.href} rel={g.email ? undefined : 'noopener'}>
+                {g.name}
+              </a>
+            </h3>
+            <p class="gate__use">{g.use}</p>
+            <div class="gate__action">
+              {g.email ? (
+                <>
+                  <span class="gate__email" data-email>
+                    {user}@<wbr />
+                    {domain}
+                  </span>
+                  <button type="button" class="gate__btn gate__copy" aria-label="Copy email address" data-copy-email hidden>
+                    <span class="gate__copy-icon">
+                      <Icon name="copy" size={16} stroke={2.2} />
+                    </span>
+                    <span class="gate__done">
+                      <Icon name="check" size={16} stroke={2.6} />
+                    </span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span>{g.shows ?? 'Message me'}</span>
+                  <span class="gate__btn" aria-hidden="true">
+                    <Icon name="arrow-up-right" size={16} stroke={2.4} />
+                  </span>
+                </>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="visually-hidden" role="status" data-copy-email-status></p>
+
+    <footer class="contact__foot">
+      <span>© 2026 Mushfikur Rahman · Built and hosted by me</span>
+      <a href="#top">Back to top <Icon name="arrow-up" size={16} stroke={2.2} /></a>
+    </footer>
+  </div>
+</section>
+
+<script>
+  import '../scripts/dhaka-clock';
+  import '../scripts/copy-email';
+</script>
+
+<style>
+  .contact {
+    --focus: var(--deep);
+    background: var(--accent);
+    color: var(--deep);
+  }
+  .contact__inner {
+    padding-top: clamp(72px, 9vw, 112px);
+    padding-bottom: 32px;
+  }
+  .contact__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px 40px;
+  }
+  .contact__title {
+    display: flex;
+    align-items: center;
+    gap: 0.12em;
+    font-size: var(--title-section);
+  }
+  .contact__plane {
+    flex: none;
+    width: 0.42em;
+    height: 0.42em;
+    fill: var(--deep);
+  }
+  .contact__lede {
+    margin-top: 20px;
+    max-width: 520px;
+    font-size: clamp(17px, 1.6vw, 20px);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .contact__clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 6px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  /* Until the script sets the time, the clock holds its place but shows nothing. */
+  .contact__clock:not([data-ticking]) {
+    visibility: hidden;
+  }
+  .contact__flaps {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .contact__flaps .flap {
+    --w: 18px;
+  }
+
+  /* Four gates across, or as many as are set; two on tablets, one per row on phones. */
+  .gates {
+    margin: clamp(32px, 4vw, 48px) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .gates[data-count='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .gates[data-count='2'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gates[data-count='1'] {
+    grid-template-columns: minmax(0, 480px);
+  }
+  @media (max-width: 1000px) {
+    .gates:not([data-count='1']) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 600px) {
+    .gates.gates {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+    .gate {
+      min-height: 0;
+      padding: 18px;
+    }
+    .gate__name {
+      margin-top: 12px;
+    }
+    .gate__use {
+      margin-bottom: 14px;
+    }
+  }
+
+  /* A gate: the whole card is its link, through the name's link reaching over it. */
+  .gate {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 236px;
+    padding: 22px;
+    border-radius: 20px;
+    background: var(--deep);
+    color: var(--tint);
+    --focus: var(--accent);
+  }
+  .gate:has(.gate__link:focus-visible) {
+    outline: 3px solid var(--deep);
+    outline-offset: 3px;
+  }
+  .gate__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--muted-deep);
+  }
+  .gate__code {
+    margin-top: 10px;
+    display: flex;
+    gap: 3px;
+  }
+  .gate__code .flap {
+    --w: 30px;
+  }
+  .gate__name {
+    margin-top: 16px;
+    font-size: clamp(30px, 2.8vw, 36px);
+  }
+  .gate__link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .gate__link:focus-visible {
+    outline: none;
+  }
+  .gate__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .gate__use {
+    margin-top: 6px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--muted-deep);
+  }
+  .gate__action {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(236, 238, 241, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 800;
+  }
+  .gate__email {
+    min-width: 0;
+  }
+  .gate__btn {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--deep);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* The copy button sits above the card's link, with a 44px target around its 36px circle. */
+  .gate__copy {
+    position: relative;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+  }
+  .gate__copy::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+  }
+  .gate__copy[hidden],
+  .gate__done,
+  .gate__copy[data-copied] .gate__copy-icon {
+    display: none;
+  }
+  .gate__copy[data-copied] .gate__done {
+    display: inline-flex;
+  }
+  .gate__copy-icon {
+    display: inline-flex;
+  }
+
+  .contact__foot {
+    margin-top: clamp(56px, 8vw, 96px);
+    padding-top: 20px;
+    border-top: 2px solid var(--deep);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0 12px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .contact__foot a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    text-decoration: none;
+  }
+</style>

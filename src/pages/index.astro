@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import About from '../components/About.astro';
+import Contact from '../components/Contact.astro';
+import Faq from '../components/Faq.astro';
+import Hero from '../components/Hero.astro';
+import Loop from '../components/Loop.astro';
+import Nav from '../components/Nav.astro';
+import Process from '../components/Process.astro';
+import ProfileCard from '../components/ProfileCard.astro';
+import Tools from '../components/Tools.astro';
+import Work from '../components/Work.astro';
+import Base from '../layouts/Base.astro';
+import { launchProblems } from '../lib/launch';
+import { loadBuildLog, loadFaq, loadProfile } from '../lib/load';
+import { parseWork } from '../lib/schema';
+
+const profile = loadProfile();
+const log = loadBuildLog();
+const work = parseWork(await getCollection('work'));
+const growth = work.find((w) => w.kind === 'growth' && w.story);
+
+const problems = launchProblems(profile, work);
+if (problems.length > 0) {
+  if (process.env.DEPLOY === '1') throw new Error(`Not ready to launch:\n${problems.join('\n')}`);
+  console.warn(`Not ready to launch yet (fine outside a deploy):\n  ${problems.join('\n  ')}`);
+}
+---
+
+<Base
+  title="Mushfikur Rahman · Platform engineer + performance marketer"
+  description="I build and run the systems online shops live on, and the ads and pages that bring them customers."
+  path="/"
+>
+  <Nav />
+  <main>
+    <Hero profile={profile} log={log} />
+    <About profile={profile} />
+    <Loop />
+    <Work
+      log={log}
+      numbers={profile.numbers}
+      growthStory={growth ? `/work/${growth.id}/` : null}
+    />
+    <ProfileCard />
+    <Tools />
+    <Process />
+    <Faq items={loadFaq()} />
+    <Contact profile={profile} />
+  </main>
+</Base>

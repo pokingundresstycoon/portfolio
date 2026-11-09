@@ -1,0 +1,248 @@
+---
+import { whatsappShareUrl } from '../lib/share';
+import Icon from './Icon.astro';
+
+const siteUrl = new URL('/', Astro.site).href;
+const contents = ['What I do', 'Results', 'Selected work', 'Tools', 'How to reach me'];
+
+---
+
+<section class="pdf" aria-labelledby="pdf-title" data-pdf>
+  <div class="wrap pdf__grid">
+    <div class="pdf__intro">
+      <h2 id="pdf-title" class="display pdf__title">Need it <br />as a PDF?</h2>
+      <p class="pdf__text">
+        My whole profile, cut down to one printable page: what I do, the results, the work, the tools and how to reach me. It is
+        made from this site, so it is never out of date.
+      </p>
+    </div>
+
+    <div class="pdf__send">
+      <p class="pdf__send-label">Or send this page</p>
+      <div class="pdf__links">
+        <a href={whatsappShareUrl(siteUrl)} class="pdf__link" rel="noopener"><Icon name="whatsapp" size={19} /><span>WhatsApp</span></a>
+        <button type="button" class="pdf__link" data-copy data-share-url={siteUrl} hidden>
+          <Icon name="link" size={19} /><span data-copy-label>Copy link</span>
+        </button>
+      </div>
+      <input class="pdf__field" type="text" readonly value={siteUrl} aria-label="Link to this page" data-copy-field hidden />
+      <p class="visually-hidden" role="status" data-copy-status></p>
+    </div>
+
+    <!-- An A4 sheet in its true proportions, framed by four corner brackets with its size beneath. -->
+    <div class="pdf__stage">
+      <div class="sheet" data-sheet>
+        <span class="corner corner--tl" data-corner="tl" aria-hidden="true"></span>
+        <span class="corner corner--tr" data-corner="tr" aria-hidden="true"></span>
+        <span class="corner corner--bl" data-corner="bl" aria-hidden="true"></span>
+        <span class="corner corner--br" data-corner="br" aria-hidden="true"></span>
+        <p class="display sheet__title">Everything above, on one page.</p>
+        <ul class="sheet__list">
+          {contents.map((c) => <li>{c}</li>)}
+        </ul>
+        <a href="/mushfikur-rahman-profile.pdf" download class="sheet__btn"><Icon name="download" size={19} stroke={2.4} />Download the PDF</a>
+        <p class="sheet__size">A4, 210 × 297 mm</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/share';
+</script>
+
+<style>
+  .pdf {
+    --focus: var(--deep);
+    background: var(--tint);
+    color: var(--deep);
+    padding-bottom: var(--section);
+    /* Reach a pixel over the pale section above, so no navy hairline shows at the join on zoomed
+       phones. */
+    box-shadow: 0 -1px 0 var(--tint);
+  }
+  .pdf__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'intro stage'
+      'send stage';
+    column-gap: clamp(48px, 7vw, 96px);
+    align-items: center;
+  }
+  .pdf__intro {
+    grid-area: intro;
+    align-self: end;
+  }
+  .pdf__send {
+    grid-area: send;
+    align-self: start;
+    margin-top: 30px;
+  }
+  .pdf__stage {
+    grid-area: stage;
+    /* Room around the sheet for its corner brackets, and below it for its size. */
+    padding: 32px 24px 52px;
+  }
+  .pdf__title {
+    font-size: var(--title-section);
+  }
+  .pdf__text {
+    margin-top: 26px;
+    max-width: 440px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted-tint);
+  }
+  .pdf__send-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted-tint);
+  }
+  .pdf__links {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 28px;
+  }
+  .pdf__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--deep);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .pdf__link span {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+  }
+  .pdf__link[hidden],
+  .pdf__field[hidden] {
+    display: none;
+  }
+  .pdf__field {
+    margin-top: 10px;
+    width: min(100%, 360px);
+    min-height: 48px;
+    padding: 0 16px;
+    border-radius: 12px;
+    border: 1px solid var(--line-tint);
+    background: var(--card);
+    color: var(--deep);
+    font: inherit;
+  }
+
+  .sheet {
+    position: relative;
+    width: clamp(260px, 31vw, 400px);
+    aspect-ratio: 210 / 297;
+    /* Padding in plain units: container units on the container itself resolve against the page. */
+    padding: clamp(20px, 2.4vw, 30px);
+    background: var(--card);
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+  }
+  .sheet__title {
+    font-size: 16.5cqi;
+  }
+  .sheet__list {
+    margin: 6cqi 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sheet__list li {
+    padding: clamp(5px, 2cqi, 8px) 0;
+    border-top: 1px solid var(--line-tint);
+    font-size: clamp(13px, 3.6cqi, 14.5px);
+    font-weight: 700;
+  }
+  .sheet__btn {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: clamp(46px, 14cqi, 56px);
+    border-radius: 14px;
+    background: var(--accent);
+    color: var(--deep);
+    font-size: 16px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  /* Four thin brackets frame the page like a viewfinder, 10px clear of its corners. */
+  .corner {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: 0 solid #8a909b;
+  }
+  .corner--tl {
+    top: -10px;
+    left: -10px;
+    border-width: 1px 0 0 1px;
+  }
+  .corner--tr {
+    top: -10px;
+    right: -10px;
+    border-width: 1px 1px 0 0;
+  }
+  .corner--bl {
+    bottom: -10px;
+    left: -10px;
+    border-width: 0 0 1px 1px;
+  }
+  .corner--br {
+    bottom: -10px;
+    right: -10px;
+    border-width: 0 1px 1px 0;
+  }
+  /* The size, once, under the bottom right corner. */
+  .sheet__size {
+    position: absolute;
+    top: calc(100% + 20px);
+    right: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted-tint);
+    white-space: nowrap;
+  }
+
+  /* Phones and small tablets: heading, then the sheet, then the ways to send it. */
+  @media (max-width: 760px) {
+    .pdf {
+      padding-top: 24px;
+      padding-bottom: calc(var(--section) + 24px);
+    }
+    .pdf__grid {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'intro'
+        'stage'
+        'send';
+    }
+    .pdf__stage {
+      justify-self: start;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 32px 12px 44px;
+    }
+    .sheet {
+      width: min(100%, 320px);
+    }
+    .pdf__send {
+      margin-top: 8px;
+    }
+  }
+</style>

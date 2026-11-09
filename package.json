@@ -1,0 +1,32 @@
+{
+  "name": "mushfikurahmaan-portfolio",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.20.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && tsx scripts/render-assets.ts",
+    "build:fixture": "CONTENT_ROOT=tests/fixtures/site astro build",
+    "preview": "astro preview",
+    "preview:fixture": "node scripts/serve.mjs dist-fixture 4322",
+    "check": "astro check",
+    "test": "vitest run tests/unit",
+    "test:build": "vitest run tests/build",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "astro": "7.4.7",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@playwright/test": "1.65.0",
+    "@types/node": "24.19.2",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0",
+    "wrangler": "4.158.0"
+  }
+}
