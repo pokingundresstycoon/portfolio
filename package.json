@@ -23,6 +23,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.12",
     "@playwright/test": "1.65.0",
+    "@sparticuz/chromium": "153.0.0",
     "@types/node": "24.19.2",
     "tsx": "4.23.15",
     "typescript": "6.0.3",

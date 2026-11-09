@@ -2,12 +2,13 @@
 // so both always match the site's own content.
 import type { AddressInfo } from 'node:net';
 import { chromium } from '@playwright/test';
+import { launchOptions } from './browser';
 import { serve } from './serve.mjs';
 
 const DIST = 'dist';
 const server = await serve(DIST, 0);
 const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-const browser = await chromium.launch({ channel: process.env.CI ? undefined : 'chrome' });
+const browser = await chromium.launch(await launchOptions());
 
 try {
   const page = await browser.newPage();
