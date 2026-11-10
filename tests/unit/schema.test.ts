@@ -30,3 +30,8 @@ test('the full photo is an image file, or not set yet', () => {
   expect(profileSchema.safeParse({ ...fullProfile, photoFull: 'mahi-full.jpg' }).success).toBe(true);
   expect(profileSchema.safeParse({ ...fullProfile, photoFull: 'mahi-full.gif' }).success).toBe(false);
 });
+
+test('the full photo says what it shows, for screen readers', () => {
+  expect(profileSchema.safeParse({ ...fullProfile, photoFullAlt: 'Mahi by the water' }).success).toBe(true);
+  expect(profileSchema.safeParse({ ...fullProfile, photoFullAlt: '' }).success).toBe(false);
+});

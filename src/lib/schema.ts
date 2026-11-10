@@ -9,6 +9,8 @@ export const profileSchema = z.strictObject({
   photo: z.string().regex(/\.(jpe?g|png|webp|avif)$/i).nullable(),
   /** The whole picture the circle opens into, also in src/assets/. */
   photoFull: z.string().regex(/\.(jpe?g|png|webp|avif)$/i).nullable(),
+  /** What the whole picture shows, for screen readers; it changes with the photo. */
+  photoFullAlt: z.string().min(1).nullable(),
   contact: z.strictObject({
     email: z.email(),
     whatsapp: z.string().regex(/^\d{10,15}$/).nullable(),

@@ -11,6 +11,7 @@ test('lists every missing piece, in order', () => {
     ...fullProfile,
     photo: null,
     photoFull: null,
+    photoFullAlt: null,
     contact: { ...fullProfile.contact, whatsapp: null, telegram: null },
   };
   expect(launchProblems(bare, [infraEntry])).toEqual([

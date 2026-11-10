@@ -91,7 +91,7 @@ test('clicking or tapping the photo opens the whole picture, rounded, and Escape
   await expect(pop(page)).toBeVisible();
   const big = pop(page).locator('img');
   await expect(big).toHaveCSS('border-radius', '28px');
-  await expect(big).toHaveAttribute('alt', 'Mushfikur Rahman standing by the water');
+  await expect(big).toHaveAttribute('alt', 'Mushfikur Rahman, chin resting on one hand');
   await expect.poll(() => big.evaluate((img: HTMLImageElement) => img.complete && img.naturalHeight > img.naturalWidth)).toBe(true);
   // The whole picture, not the circle's crop.
   expect(await big.getAttribute('src')).not.toBe(await photo(page).locator('img').first().getAttribute('src'));

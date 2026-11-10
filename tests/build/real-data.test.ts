@@ -62,7 +62,7 @@ test('About shows the real photo, small and light, and it cannot be dragged off 
 test('the whole picture for the pop-up ships as a light WebP', async () => {
   const { statSync } = await import('node:fs');
   const { DIST } = await import('./dist');
-  const img = html.match(/<img\b[^>]*alt="Mushfikur Rahman standing by the water"[^>]*>/)?.[0];
+  const img = html.match(/<img\b[^>]*alt="Mushfikur Rahman, chin resting on one hand"[^>]*>/)?.[0];
   expect(img, 'the full photo is in the pop-up').toBeTruthy();
   const src = img!.match(/\ssrc="([^"]+)"/)![1];
   expect(src).toMatch(/^\/_astro\/.+\.webp$/);

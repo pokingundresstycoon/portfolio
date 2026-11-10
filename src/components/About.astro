@@ -59,7 +59,7 @@ const halves = [
       photo && full && (
         <div id="photo-full" class="about__pop" popover data-photo-pop>
           <div class="about__frame" data-photo-frame>
-            <Image src={full} alt={`${profile.name} standing by the water`} width={900} loading="lazy" draggable="false" />
+            <Image src={full} alt={profile.photoFullAlt ?? profile.name} width={900} loading="lazy" draggable="false" />
             <button type="button" class="about__shut" popovertarget="photo-full" popovertargetaction="hide" aria-label="Close">
               <Icon name="close" size={20} stroke={2.4} />
             </button>

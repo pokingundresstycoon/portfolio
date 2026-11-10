@@ -7,6 +7,7 @@ export const fullProfile: Profile = {
   statusLine: 'Taking new work · Dhaka to worldwide',
   photo: 'mahi.jpg',
   photoFull: 'mahi-full.jpg',
+  photoFullAlt: 'Mahi, chin resting on one hand',
   contact: {
     email: 'hello@mushfikurahmaan.com',
     whatsapp: '8801000000000',
